@@ -85,6 +85,23 @@ class MLP_fusion_gate(torch.nn.Module):
     def forward(self,x):
         return self.mlp(x)
 """
+class clip_fuion(torch.nn.Module):
+    def __init__(self,input_dim,out_dim,embed_dims,dropout):
+        super(clip_fuion, self).__init__()
+        layers = list()
+        for embed_dim in embed_dims:
+            layers.append(torch.nn.Linear(input_dim,embed_dim))
+            layers.append(torch.nn.BatchNorm1d(embed_dim))
+            layers.append(torch.nn.GELU())
+            layers.append(torch.nn.Dropout(p=dropout))
+            input_dim = embed_dim
+        layers.append(torch.nn.Linear(input_dim,out_dim))
+        self.mlp = torch.nn.Sequential(*layers)
+    def forward(self,x):
+        return self.mlp(x)
+
+
+
 class cnn_extractor(torch.nn.Module):
     def __init__(self,input_size,feature_kernel):
         super(cnn_extractor, self).__init__()
